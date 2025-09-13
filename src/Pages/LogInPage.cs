@@ -14,7 +14,7 @@ public class LogInPage : BasePage
     private readonly By UserNameInput = By.Name("userName");
     private readonly By PasswordInput = By.Name("password");
     private readonly By LoginButton = By.XPath("//input[@value='Log In']");
-    private readonly By ErrorMessage = By.CssSelector(".error")
+    private readonly By ErrorMessage = By.CssSelector(".error");
 
     public void LogIn(string userName, string password)
     {
@@ -28,7 +28,7 @@ public class LogInPage : BasePage
         return IsElementPresent(ErrorMessage);
     }
 
-    public override IsAt()
+    public override bool IsAt()
     {
         return IsElementPresent(LoginButton);
     }

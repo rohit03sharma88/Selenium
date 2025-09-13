@@ -28,11 +28,10 @@ namespace SeleniumTests.src.core
         {
             var options = new ChromeOptions();
             options.AddArgument("--start-maximized");
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--no-sandbox");
 
-            var service = ChromeDriverService.CreateDefaultService();
-            service.HideCommandPromptWindow = true;
-
-            var driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(120));
+            var driver = new ChromeDriver(options);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             return driver;
         }
