@@ -192,3 +192,4 @@ C:\Automation\TellerAutomation\SeleniumTests\obj\Debug\net8.0\refint\SeleniumTes
 C:\Automation\TellerAutomation\SeleniumTests\obj\Debug\net8.0\SeleniumTests.pdb
 C:\Automation\TellerAutomation\SeleniumTests\obj\Debug\net8.0\SeleniumTests.genruntimeconfig.cache
 C:\Automation\TellerAutomation\SeleniumTests\obj\Debug\net8.0\ref\SeleniumTests.dll
+C:\Automation\TellerAutomation\SeleniumTests\obj\Debug\net8.0\SeleniumTests.sourcelink.json

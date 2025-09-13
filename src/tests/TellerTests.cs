@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using AventStack.ExtentReports.Model;
 using NUnit.Framework;
 using SeleniumTests.src.core;
 using SeleniumTests.src.Pages;
@@ -15,29 +16,32 @@ namespace SeleniumTests.src.tests
         [SetUp]
         public void SetUpTest()
         {
-            Console.WriteLine($"Using Excel file at: {excelPath}");
             excelPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "users.xlsx");
-            excelPath = Path.GetFullPath(excelPath);
-            
+            excelPath = Path.GetFullPath(excelPath);            
         }
 
         [Test]
         public void LoginAndVerifyAccountFromExcel()
         {
-            Console.WriteLine("Test");
-            var users = ExcelReader.ReadUsers(excelPath);
-            Assert.That(users, Is.Not.Empty, "No users found in the Excel file.");
-
+            var users = ExcelReader.ReadUsers(excelPath);            
             var user = users.First();
-            var loginPage = PageFactory.Create<LogInPage>(Driver);
-            loginPage.NavigateTo(BaseUrl + "/parabank/index.htm");
+
+            var loginPage = new LogInPage(Driver);
+            loginPage.Navigate();
+            ReportManager.LogInfo($"Navigated to: {BaseUrl}");
+
             loginPage.LogIn(user.UserId, user.Password);
+            ReportManager.LogInfo($"Logged in with User: {user.UserId}");
 
-            var home = PageFactory.Create<HomePage>(Driver);
-            var accountsOverview = PageFactory.Create<AccountsOverviewPage>(Driver);
-
+            var home = new HomePage(Driver);
+            Assert.That(home.IsAt(), Is.True, "Failed to log in or not at Home Page.");
+            ReportManager.LogPass("Successfully logged in and at Home Page.");
             home.GotoAccountsOverview();
-            Assert.That(accountsOverview.HasAccount(user.AccountNumber), Is.Not.Empty, $"No accounts {user.AccountNumber} found for the user {user.UserId}.");
+
+            var accountsOverview = new AccountsOverviewPage(Driver);
+            Assert.That(accountsOverview.HasAccount(user.AccountNumber), Is.True, "Account numbernot found");
+            
+            ReportManager.LogPass($"Account number {user.AccountNumber} found for the user {user.UserId}.");
         }
 
         [Test]
@@ -48,14 +52,14 @@ namespace SeleniumTests.src.tests
 
             foreach (var user in users)
             {
-                var loginPage = PageFactory.Create<LogInPage>(Driver);
-                loginPage.NavigateTo(BaseUrl + "/parabank/index.htm");
+                var loginPage = new LogInPage(Driver);
+                loginPage.Navigate();
                 loginPage.LogIn(user.UserId, user.Password);
 
-                var home = PageFactory.Create<HomePage>(Driver);
+                var home = new HomePage(Driver);
                 home.GotoAccountsOverview();
 
-                var accountsOverview = PageFactory.Create<AccountsOverviewPage>(Driver);
+                var accountsOverview = new AccountsOverviewPage(Driver);
                 Assert.That(accountsOverview.GetAccountNumbers().Count() > 0, Is.Not.Empty, $"No accounts {user.AccountNumber} found for the user {user.UserId}.");
 
                 // Logout after each user test

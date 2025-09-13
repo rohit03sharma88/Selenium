@@ -3,24 +3,28 @@ using OpenQA.Selenium;
 
 namespace SeleniumTests.src.Pages;
 
-public class HomePage
+public class HomePage : BasePage
 {
-    private readonly IWebDriver _driver;
-    public HomePage(IWebDriver driver)
-    {
-        _driver = driver;
-    }
+    public override string PageUrl => "/parabank/overview.htm";
 
-    private IWebElement AccountsOverviewLink => _driver.FindElement(By.LinkText("Accounts Overview"));
-    private IWebElement LogOutLink => _driver.FindElement(By.LinkText("Log Out"));
+    private readonly By AccountsOverviewLink = By.LinkText("Accounts Overview");
+    private readonly By LogOutLink = By.LinkText("Log Out");
+
+    public HomePage(IWebDriver driver) : base (driver) {}
+    
 
     public void GotoAccountsOverview()
     {
-        AccountsOverviewLink.Click();
+        ClickElement(AccountsOverviewLink);
     }
 
     public void LogOut()
     {
-        LogOutLink.Click();
+        ClickElement(LogOutLink);
+    }
+
+    public override bool IsAt()
+    {
+        return IsElementPresent(AccountsOverviewLink);
     }
 }

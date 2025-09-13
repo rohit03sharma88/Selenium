@@ -4,45 +4,32 @@ using OpenQA.Selenium.Support.UI;
 
 namespace SeleniumTests.src.Pages;
 
-public class LogInPage
+public class LogInPage : BasePage
 {
-    private readonly IWebDriver _driver;
-    private readonly WebDriverWait _wait;
+   
+    public override string PageUrl => "/parabank/index.htm";
     
-    public LogInPage(IWebDriver driver)
-    {
-        _driver = driver;
-        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-    }
+    public LogInPage(IWebDriver driver) : base(driver){}
 
-    private IWebElement UserNameInput => _driver.FindElement(By.Name("username"));
-    private IWebElement PasswordInput => _driver.FindElement(By.Name("password"));
-    private IWebElement LoginButton => _driver.FindElement(By.XPath("//input[@value='Log In']"));
+    private readonly By UserNameInput = By.Name("userName");
+    private readonly By PasswordInput = By.Name("password");
+    private readonly By LoginButton = By.XPath("//input[@value='Log In']");
+    private readonly By ErrorMessage = By.CssSelector(".error")
 
-    public void LogIn(string username, string password)
+    public void LogIn(string userName, string password)
     {
-        UserNameInput.Clear();
-        UserNameInput.SendKeys(username);
-        PasswordInput.Clear();
-        PasswordInput.SendKeys(password);
-        LoginButton.Click();
-    }
-
-    public void NavigateTo(string url)
-    {
-        _driver.Navigate().GoToUrl(url);
+       EnterText(UserNameInput, userName);
+       EnterText(PasswordInput, password);
+       ClickElement(LoginButton);
     }
 
     public bool IsLoginErrorDisplayed()
     {
-        try
-        {
-            var errorElement = _driver.FindElement(By.CssSelector(".error"));
-            return errorElement.Displayed;
-        }
-        catch (NoSuchElementException)
-        {
-            return false;
-        }
+        return IsElementPresent(ErrorMessage);
+    }
+
+    public override IsAt()
+    {
+        return IsElementPresent(LoginButton);
     }
 }

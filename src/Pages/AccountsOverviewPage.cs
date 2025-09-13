@@ -1,32 +1,29 @@
 using System;
 using OpenQA.Selenium;
 using System.Collections;
+using System.Linq;
+
 namespace SeleniumTests.src.Pages;
 
-public class AccountsOverviewPage
+public class AccountsOverviewPage : BasePage
 {
-    private readonly IWebDriver _driver;
-    public AccountsOverviewPage(IWebDriver driver)
-    {
-        _driver = driver;
-    }
+    public override string PageUrl => "/parabank/overview.htm";
 
+    public AccountsOverviewPage(IWebDriver driver) : base(driver){}
+    public readonly By AccountsTable = By.CssSelector("#accountTable tbody tr");
     public List<string> GetAccountNumbers()
-    {
-        var accounts = new List<string>();
-        var rows = _driver.FindElements(By.CssSelector("#accountTable tbody tr"));
-        foreach (var row in rows)
-        {
-            var accountLink = row.FindElement(By.CssSelector("td a"));
-            if(accountLink != null )
-                accounts.Add(accountLink.Text);
-
-        }
-        return accounts;
+    {        
+        var rows = Driver.FindElements(AccountsTable);        
+        return rows.Select(r => r.FindElement(By.CssSelector("td a")).Text.Trim()).ToList();
     }
 
     public bool HasAccount(string accountNumber)
     {
         return GetAccountNumbers().Contains(accountNumber);
+    }
+
+    public override bool IsAt()
+    {
+        return Driver.FindElements(AccountsTable).Any();
     }
 }
